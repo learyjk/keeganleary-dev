@@ -1,0 +1,575 @@
+---
+const artifacts = [
+	'Webflow University',
+	'Lunar Rescue',
+	'Random Word Device',
+	'Flow To-go',
+	'Finsweet Components',
+	'Asset Bae',
+];
+
+const posts = [
+	{ date: '2026.07', title: 'The Archive Is the UI', topic: 'Design', read: '6 min', state: 'New' },
+	{ date: '2026.05', title: 'Designing for Failure', topic: 'Systems', read: '8 min', state: 'Filed' },
+	{ date: '2026.03', title: 'Trust the Physical Type', topic: 'Craft', read: '5 min', state: 'Filed' },
+	{ date: '2026.01', title: 'Notes from Terminal 4', topic: 'Process', read: '4 min', state: 'Filed' },
+];
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta
+			name="description"
+			content="Keegan Leary designs, builds, and ships unusual software at speeds that make project managers visibly nervous."
+		/>
+		<meta name="theme-color" content="#0a0a0a" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=VT323&display=swap"
+			rel="stylesheet"
+		/>
+		<title>Keegan Leary — Designer + Builder</title>
+	</head>
+	<body>
+		<canvas id="print-buffer" aria-hidden="true"></canvas>
+
+		<main class="desk">
+			<article class="sheet" aria-labelledby="portfolio-title">
+				<aside class="feed-strip" aria-hidden="true">
+					{Array.from({ length: 7 }, () => <span class="feed-hole"></span>)}
+				</aside>
+
+				<div class="page-content">
+					<header class="identity-header">
+						<div>
+							<h1 id="portfolio-title">Keegan Leary</h1>
+							<p class="tagline">Move fast / leave useful artifacts</p>
+						</div>
+						<p class="system-meta">
+							Portfolio / 2026<br />
+							Status: Available<br />
+							Based: Earth / Remote
+						</p>
+					</header>
+
+					<div class="content-grid">
+						<aside class="operator">
+							<section aria-labelledby="operator-title">
+								<h2 id="operator-title">About the operator</h2>
+								<p class="bio">
+									I design, build, and ship unusual software at speeds that make project managers
+									visibly nervous.
+								</p>
+							</section>
+
+							<nav class="artifacts" aria-labelledby="artifacts-title">
+								<h3 id="artifacts-title">Deployed artifacts</h3>
+								<ol>
+									{artifacts.map((artifact, index) => (
+										<li id={`artifact-${artifact.toLowerCase().replaceAll(' ', '-')}`}>
+											<a href={`#artifact-${artifact.toLowerCase().replaceAll(' ', '-')}`}>
+												<span>{String(index + 1).padStart(2, '0')}</span>
+												{artifact}
+											</a>
+										</li>
+									))}
+								</ol>
+							</nav>
+
+							<a class="field-notes" href="#postmortems">Field notes <span>→</span></a>
+						</aside>
+
+						<section class="postmortems" id="postmortems" aria-labelledby="postmortems-title">
+							<div class="post-row post-header" aria-hidden="true">
+								<span>Date</span>
+								<span id="postmortems-title">Postmortems without the mortem</span>
+								<span>Topic</span>
+								<span>Read</span>
+								<span>State</span>
+							</div>
+
+							{posts.map((post) => (
+								<a
+									class="post-row"
+									href={`#post-${post.title.toLowerCase().replaceAll(' ', '-')}`}
+									id={`post-${post.title.toLowerCase().replaceAll(' ', '-')}`}
+								>
+									<time>{post.date}</time>
+									<strong>{post.title}</strong>
+									<span>{post.topic}</span>
+									<span>{post.read}</span>
+									<span class:list={{ new: post.state === 'New' }}>{post.state}</span>
+								</a>
+							))}
+						</section>
+					</div>
+
+					<footer>
+						<span>Keegan Leary / Designer + Builder / Continuously Shipping</span>
+						<a href="mailto:hello@keeganleary.dev">Contact → hello@keeganleary.dev</a>
+					</footer>
+				</div>
+
+				<div class="scan-band" aria-hidden="true"></div>
+			</article>
+		</main>
+
+		<script>
+			import '../scripts/print-buffer';
+		</script>
+	</body>
+</html>
+
+<style is:global>
+	:root {
+		--desk: #0a0a0a;
+		--paper: #e4e2d7;
+		--ink: #161616;
+		--muted: #777770;
+		--faint: #666660;
+		--rule: 2px dotted var(--ink);
+		font-family: 'Space Mono', monospace;
+		color: var(--ink);
+		background: var(--desk);
+		font-synthesis: none;
+		-webkit-font-smoothing: antialiased;
+	}
+
+	* {
+		box-sizing: border-box;
+	}
+
+	html {
+		background: var(--desk);
+		scroll-behavior: smooth;
+	}
+
+	body {
+		min-width: 320px;
+		min-height: 100vh;
+		margin: 0;
+		overflow-x: hidden;
+	}
+
+	a {
+		color: inherit;
+	}
+
+	#print-buffer {
+		position: fixed;
+		inset: 0;
+		z-index: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+	}
+
+	.desk {
+		position: relative;
+		z-index: 1;
+		display: flex;
+		min-height: 100svh;
+		padding: clamp(18px, 3.05vw, 44px);
+	}
+
+	.sheet {
+		position: relative;
+		display: flex;
+		width: min(100%, 1352px);
+		min-height: calc(100svh - clamp(36px, 6.1vw, 88px));
+		margin: auto;
+		overflow: hidden;
+		background: var(--paper);
+		box-shadow: 10px 12px 0 #000;
+		animation: paper-load 700ms steps(10, end) both;
+	}
+
+	.feed-strip {
+		display: flex;
+		flex: 0 0 54px;
+		flex-direction: column;
+		align-items: center;
+		justify-content: space-evenly;
+		border-right: var(--rule);
+	}
+
+	.feed-hole {
+		width: 18px;
+		height: 18px;
+		flex: 0 0 18px;
+		border-radius: 50%;
+		background: var(--desk);
+		box-shadow: inset 0 2px 2px #000;
+	}
+
+	.page-content {
+		display: flex;
+		min-width: 0;
+		flex: 1;
+		flex-direction: column;
+		gap: 24px;
+		padding: 34px 40px 28px;
+	}
+
+	.identity-header {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		padding-bottom: 22px;
+		border-bottom: var(--rule);
+	}
+
+	h1,
+	h2,
+	.field-notes {
+		font-family: 'VT323', monospace;
+		font-weight: 400;
+		text-transform: uppercase;
+	}
+
+	h1 {
+		margin: 0;
+		font-size: clamp(58px, 5.28vw, 76px);
+		line-height: 0.87;
+		letter-spacing: 0.04em;
+	}
+
+	.tagline {
+		margin: 5px 0 0;
+		color: var(--faint);
+		font-size: 13px;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+	}
+
+	.system-meta {
+		margin: 0;
+		font-size: 12px;
+		line-height: 21px;
+		text-align: right;
+		text-transform: uppercase;
+	}
+
+	.content-grid {
+		display: grid;
+		min-height: 0;
+		flex: 1;
+		grid-template-columns: 350px minmax(0, 1fr);
+		gap: 34px;
+	}
+
+	.operator {
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+		padding-right: 34px;
+		border-right: var(--rule);
+	}
+
+	h2 {
+		margin: 0;
+		font-size: 32px;
+		line-height: 40px;
+		letter-spacing: 0.08em;
+	}
+
+	.bio {
+		margin: 18px 0 0;
+		font-size: 14px;
+		line-height: 23px;
+	}
+
+	.artifacts {
+		min-height: 236px;
+		padding: 16px;
+		border: var(--rule);
+	}
+
+	.artifacts h3 {
+		margin: 0 0 21px;
+		font-size: 12px;
+		font-weight: 400;
+		line-height: 21px;
+		text-transform: uppercase;
+	}
+
+	.artifacts ol {
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.artifacts a {
+		display: flex;
+		gap: 10px;
+		padding: 2px 0;
+		font-size: 12px;
+		line-height: 17px;
+		text-decoration: none;
+		text-transform: uppercase;
+		transition: padding 120ms steps(2, end), background-color 120ms steps(2, end);
+	}
+
+	.artifacts a span {
+		flex: 0 0 22px;
+	}
+
+	.artifacts a:hover,
+	.artifacts a:focus-visible {
+		padding-left: 7px;
+		color: var(--paper);
+		background: var(--ink);
+		outline: none;
+	}
+
+	.field-notes {
+		width: max-content;
+		font-size: 28px;
+		line-height: 34px;
+		text-decoration: none;
+	}
+
+	.field-notes span {
+		display: inline-block;
+		transition: transform 140ms steps(2, end);
+	}
+
+	.field-notes:hover span {
+		transform: translateX(8px);
+	}
+
+	.postmortems {
+		min-width: 0;
+	}
+
+	.post-row {
+		display: grid;
+		grid-template-columns: 110px minmax(210px, 270px) 130px 110px minmax(60px, 1fr);
+		padding: 18px 0;
+		border-bottom: 1px dotted var(--ink);
+		font-size: 15px;
+		line-height: 18px;
+		text-decoration: none;
+		text-transform: uppercase;
+		transition: padding 140ms steps(2, end), color 140ms steps(2, end), background 140ms steps(2, end);
+	}
+
+	.post-row strong {
+		font-weight: 400;
+	}
+
+	.post-row:not(.post-header):hover,
+	.post-row:not(.post-header):focus-visible {
+		padding-inline: 12px;
+		color: var(--paper);
+		background: var(--ink);
+		outline: none;
+	}
+
+	.post-header {
+		padding: 10px 0;
+		border-bottom: var(--rule);
+		color: var(--muted);
+		font-size: 12px;
+		line-height: 16px;
+	}
+
+	.new::before {
+		content: '● ';
+		font-size: 9px;
+	}
+
+	footer {
+		display: flex;
+		justify-content: space-between;
+		gap: 24px;
+		padding-top: 16px;
+		border-top: var(--rule);
+		color: var(--muted);
+		font-size: 11px;
+		line-height: 14px;
+		text-transform: uppercase;
+	}
+
+	footer a {
+		letter-spacing: 0.04em;
+		text-decoration: none;
+	}
+
+	footer a:hover {
+		color: var(--ink);
+		text-decoration: underline;
+		text-decoration-style: dotted;
+		text-underline-offset: 4px;
+	}
+
+	.scan-band {
+		position: absolute;
+		z-index: 3;
+		top: -80px;
+		left: 54px;
+		width: calc(100% - 54px);
+		height: 42px;
+		pointer-events: none;
+		background: linear-gradient(180deg, transparent, rgb(22 22 22 / 8%), transparent);
+		mix-blend-mode: multiply;
+		animation: scan 8s steps(24, end) infinite 1.2s;
+	}
+
+	@keyframes paper-load {
+		from {
+			clip-path: inset(0 0 100% 0);
+			transform: translateY(-8px);
+		}
+		to {
+			clip-path: inset(0);
+			transform: translateY(0);
+		}
+	}
+
+	@keyframes scan {
+		0%,
+		70% {
+			transform: translateY(-80px);
+			opacity: 0;
+		}
+		72% {
+			opacity: 1;
+		}
+		96% {
+			transform: translateY(calc(100svh + 80px));
+			opacity: 1;
+		}
+		100% {
+			transform: translateY(calc(100svh + 80px));
+			opacity: 0;
+		}
+	}
+
+	@media (max-width: 1050px) {
+		.content-grid {
+			grid-template-columns: 300px minmax(0, 1fr);
+			gap: 26px;
+		}
+
+		.operator {
+			padding-right: 26px;
+		}
+
+		.post-row {
+			grid-template-columns: 84px minmax(170px, 1fr) 100px 70px;
+		}
+
+		.post-row > :last-child {
+			display: none;
+		}
+	}
+
+	@media (max-width: 760px) {
+		.desk {
+			padding: 12px;
+		}
+
+		.sheet {
+			min-height: calc(100svh - 24px);
+		}
+
+		.feed-strip {
+			flex-basis: 34px;
+		}
+
+		.feed-hole {
+			width: 12px;
+			height: 12px;
+			flex-basis: 12px;
+		}
+
+		.page-content {
+			gap: 22px;
+			padding: 24px 18px;
+		}
+
+		.identity-header {
+			gap: 22px;
+		}
+
+		h1 {
+			font-size: clamp(48px, 14vw, 68px);
+		}
+
+		.tagline {
+			max-width: 260px;
+			font-size: 10px;
+			line-height: 16px;
+		}
+
+		.system-meta {
+			display: none;
+		}
+
+		.content-grid {
+			display: flex;
+			flex-direction: column;
+			gap: 28px;
+		}
+
+		.operator {
+			width: 100%;
+			padding: 0 0 28px;
+			border-right: 0;
+			border-bottom: var(--rule);
+		}
+
+		.artifacts {
+			height: auto;
+			min-height: 0;
+		}
+
+		.post-row {
+			grid-template-columns: 76px minmax(0, 1fr) 60px;
+			gap: 8px;
+			font-size: 12px;
+		}
+
+		.post-row > :nth-child(3),
+		.post-row > :last-child {
+			display: none;
+		}
+
+		.post-header {
+			font-size: 9px;
+		}
+
+		footer {
+			flex-direction: column;
+		}
+
+		.scan-band {
+			left: 34px;
+			width: calc(100% - 34px);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		html {
+			scroll-behavior: auto;
+		}
+
+		.sheet,
+		.scan-band {
+			animation: none;
+		}
+
+		#print-buffer {
+			display: none;
+		}
+	}
+</style>
