@@ -20,7 +20,6 @@ if (canvas && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
 			precision mediump float;
 
 			uniform vec2 resolution;
-			uniform vec2 pointer;
 			uniform float time;
 
 			float hash(vec2 p) {
@@ -43,25 +42,29 @@ if (canvas && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
 
 			void main() {
 				vec2 uv = gl_FragCoord.xy / resolution;
-				vec2 mouse = pointer / resolution;
 				float aspect = resolution.x / resolution.y;
+				vec2 p = vec2((uv.x - 0.5) * aspect, uv.y - 0.5);
 
-				vec2 cell = floor(gl_FragCoord.xy / 4.0);
-				float grain = hash(cell + floor(time * 8.0));
-				float bands = noise(vec2(uv.y * 70.0, floor(time * 1.8)));
-				float scan = smoothstep(0.94, 1.0, sin((uv.y + time * 0.025) * 520.0) * 0.5 + 0.5);
+				float gridX = 1.0 - smoothstep(0.0, 0.018, abs(fract(gl_FragCoord.x / 96.0) - 0.5));
+				float gridY = 1.0 - smoothstep(0.0, 0.018, abs(fract(gl_FragCoord.y / 96.0) - 0.5));
+				float grid = max(gridX, gridY);
 
-				vec2 delta = vec2((uv.x - mouse.x) * aspect, uv.y - mouse.y);
-				float distanceFromPointer = length(delta);
-				float ripple = sin(distanceFromPointer * 90.0 - time * 5.0);
-				ripple *= smoothstep(0.34, 0.0, distanceFromPointer);
+				float field = noise(p * 1.7 + vec2(time * 0.018, -time * 0.012));
+				float contour = 1.0 - smoothstep(0.025, 0.075, abs(fract(field * 5.0) - 0.5));
 
-				float signal = step(0.975, grain) * bands;
-				signal += scan * 0.018;
-				signal += max(ripple, 0.0) * 0.035;
+				vec2 driftA = vec2(sin(time * 0.07) * 0.34, cos(time * 0.05) * 0.26);
+				vec2 driftB = vec2(cos(time * 0.045) * 0.42, sin(time * 0.065) * 0.30);
+				float glowA = exp(-length(p - driftA) * 3.7);
+				float glowB = exp(-length(p - driftB) * 4.8);
 
-				float base = 0.035 + signal;
-				gl_FragColor = vec4(vec3(base), 1.0);
+				float dither = (hash(floor(gl_FragCoord.xy / 3.0)) - 0.5) * 0.004;
+				vec3 base = vec3(0.018, 0.019, 0.018);
+				vec3 signal = vec3(0.026, 0.028, 0.027) * grid;
+				signal += vec3(0.020, 0.022, 0.021) * contour;
+				signal += vec3(0.026, 0.030, 0.029) * glowA;
+				signal += vec3(0.014, 0.016, 0.015) * glowB;
+
+				gl_FragColor = vec4(base + signal + dither, 1.0);
 			}
 		`;
 
@@ -101,26 +104,16 @@ if (canvas && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
 
 				const position = gl.getAttribLocation(program, 'position');
 				const resolution = gl.getUniformLocation(program, 'resolution');
-				const pointer = gl.getUniformLocation(program, 'pointer');
 				const time = gl.getUniformLocation(program, 'time');
-				const pointerPosition = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 
 				const resize = () => {
-					const pixelRatio = Math.min(window.devicePixelRatio, 2);
+					const pixelRatio = Math.min(window.devicePixelRatio, 1.25);
 					canvas.width = Math.round(window.innerWidth * pixelRatio);
 					canvas.height = Math.round(window.innerHeight * pixelRatio);
 					gl.viewport(0, 0, canvas.width, canvas.height);
 				};
 
 				window.addEventListener('resize', resize, { passive: true });
-				window.addEventListener(
-					'pointermove',
-					(event) => {
-						pointerPosition.x += (event.clientX - pointerPosition.x) * 0.16;
-						pointerPosition.y += (window.innerHeight - event.clientY - pointerPosition.y) * 0.16;
-					},
-					{ passive: true },
-				);
 
 				resize();
 				gl.useProgram(program);
@@ -128,13 +121,15 @@ if (canvas && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
 				gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
 
 				const startedAt = performance.now();
+				let lastFrame = 0;
 				const render = (now: number) => {
+					if (now - lastFrame < 1000 / 45) {
+						requestAnimationFrame(render);
+						return;
+					}
+
+					lastFrame = now;
 					gl.uniform2f(resolution, canvas.width, canvas.height);
-					gl.uniform2f(
-						pointer,
-						pointerPosition.x * (canvas.width / window.innerWidth),
-						pointerPosition.y * (canvas.height / window.innerHeight),
-					);
 					gl.uniform1f(time, (now - startedAt) / 1000);
 					gl.drawArrays(gl.TRIANGLES, 0, 6);
 					requestAnimationFrame(render);

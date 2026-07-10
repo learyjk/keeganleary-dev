@@ -1,0 +1,22 @@
+{
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "keeganleary-dev",
+	"compatibility_date": "2026-07-10",
+	"workers_dev": true,
+	"preview_urls": true,
+	"routes": [
+		{
+			"pattern": "keeganleary.dev",
+			"custom_domain": true
+		},
+		{
+			"pattern": "www.keeganleary.dev",
+			"custom_domain": true
+		}
+	],
+	"assets": {
+		"directory": "./dist",
+		"html_handling": "auto-trailing-slash",
+		"not_found_handling": "404-page"
+	}
+}
