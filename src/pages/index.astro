@@ -1,11 +1,12 @@
 ---
 const artifacts = [
-	'Webflow University',
-	'Lunar Rescue',
-	'Random Word Device',
-	'Flow To-go',
-	'Finsweet Components',
-	'Asset Bae',
+	{ title: 'Webflow University', url: 'https://university.webflow.com' },
+	{ title: 'Lunar Rescue', url: 'https://lunar-rescue.com' },
+	{ title: 'Random Word Device', url: 'https://apps.apple.com/us/app/random-word-device/id6762091662' },
+	{ title: 'Flow To-go', url: 'https://apps.apple.com/us/app/flow-to-go/id6757930882' },
+	{ title: 'Finsweet Components', url: 'https://finsweet.com/components' },
+	{ title: 'Asset Bae', url: 'https://webflow.com/apps/detail/asset-bae' },
+	{ title: 'MP History', url: 'https://mphistory.org' },
 ];
 
 const posts = [
@@ -71,10 +72,10 @@ const posts = [
 								<h3 id="artifacts-title">Deployed artifacts</h3>
 								<ol>
 									{artifacts.map((artifact, index) => (
-										<li id={`artifact-${artifact.toLowerCase().replaceAll(' ', '-')}`}>
-											<a href={`#artifact-${artifact.toLowerCase().replaceAll(' ', '-')}`}>
+										<li id={`artifact-${artifact.title.toLowerCase().replaceAll(' ', '-')}`}>
+											<a href={artifact.url} target="_blank" rel="noopener noreferrer">
 												<span>{String(index + 1).padStart(2, '0')}</span>
-												{artifact}
+												{artifact.title}
 											</a>
 										</li>
 									))}
@@ -111,11 +112,14 @@ const posts = [
 
 					<footer>
 						<span>Keegan Leary / Designer + Builder / Continuously Shipping</span>
-						<a href="mailto:hello@keeganleary.dev">Contact → hello@keeganleary.dev</a>
+						<nav class="footer-links" aria-label="Contact and social links">
+							<a href="https://github.com/learyjk" target="_blank" rel="noopener noreferrer">GitHub</a>
+							<a href="https://youtube.com/@webbae" target="_blank" rel="noopener noreferrer">YouTube</a>
+							<a href="mailto:hello@keeganleary.dev">Email → hello@keeganleary.dev</a>
+						</nav>
 					</footer>
 				</div>
 
-				<div class="scan-band" aria-hidden="true"></div>
 			</article>
 		</main>
 
@@ -179,6 +183,7 @@ const posts = [
 
 	.sheet {
 		position: relative;
+		isolation: isolate;
 		display: flex;
 		width: min(100%, 1352px);
 		min-height: calc(100svh - clamp(36px, 6.1vw, 88px));
@@ -186,7 +191,7 @@ const posts = [
 		overflow: hidden;
 		background: var(--paper);
 		box-shadow: 10px 12px 0 #000;
-		animation: paper-load 700ms steps(10, end) both;
+		animation: paper-load 380ms steps(8, end) both;
 	}
 
 	.feed-strip {
@@ -404,24 +409,18 @@ const posts = [
 		text-decoration: none;
 	}
 
+	.footer-links {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-end;
+		gap: 8px 20px;
+	}
+
 	footer a:hover {
 		color: var(--ink);
 		text-decoration: underline;
 		text-decoration-style: dotted;
 		text-underline-offset: 4px;
-	}
-
-	.scan-band {
-		position: absolute;
-		z-index: 3;
-		top: -80px;
-		left: 54px;
-		width: calc(100% - 54px);
-		height: 42px;
-		pointer-events: none;
-		background: linear-gradient(180deg, transparent, rgb(22 22 22 / 8%), transparent);
-		mix-blend-mode: multiply;
-		animation: scan 8s steps(24, end) infinite 1.2s;
 	}
 
 	@keyframes paper-load {
@@ -432,25 +431,6 @@ const posts = [
 		to {
 			clip-path: inset(0);
 			transform: translateY(0);
-		}
-	}
-
-	@keyframes scan {
-		0%,
-		70% {
-			transform: translateY(-80px);
-			opacity: 0;
-		}
-		72% {
-			opacity: 1;
-		}
-		96% {
-			transform: translateY(calc(100svh + 80px));
-			opacity: 1;
-		}
-		100% {
-			transform: translateY(calc(100svh + 80px));
-			opacity: 0;
 		}
 	}
 
@@ -552,10 +532,10 @@ const posts = [
 			flex-direction: column;
 		}
 
-		.scan-band {
-			left: 34px;
-			width: calc(100% - 34px);
+		.footer-links {
+			justify-content: flex-start;
 		}
+
 	}
 
 	@media (prefers-reduced-motion: reduce) {
@@ -563,8 +543,7 @@ const posts = [
 			scroll-behavior: auto;
 		}
 
-		.sheet,
-		.scan-band {
+		.sheet {
 			animation: none;
 		}
 
