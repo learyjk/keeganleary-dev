@@ -1,0 +1,55 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { terminalCut } from '../../lib/transitions';
+
+export async function getStaticPaths() {
+	const posts = await getCollection('blog');
+	return posts.map((post) => ({
+		params: { slug: post.id },
+		props: { post },
+	}));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<Layout title={`${post.data.title} — Keegan Leary`} description={post.data.excerpt}>
+	<aside class="column-left post-meta" slot="left" transition:animate={terminalCut}>
+		<div class="post-meta-header">
+			<h2 transition:name={`post-title-${post.id}`}>{post.data.title}</h2>
+		</div>
+
+		<dl class="post-specs">
+			<div>
+				<dt>Date</dt>
+				<dd transition:name={`post-date-${post.id}`}>{post.data.date}</dd>
+			</div>
+			<div>
+				<dt>Topic</dt>
+				<dd transition:name={`post-topic-${post.id}`}>{post.data.topic}</dd>
+			</div>
+			<div>
+				<dt>Read</dt>
+				<dd transition:name={`post-read-${post.id}`}>{post.data.read}</dd>
+			</div>
+			<div>
+				<dt>State</dt>
+				<dd transition:name={`post-state-${post.id}`} class:list={{ new: post.data.state === 'New' }}>
+					{post.data.state}
+				</dd>
+			</div>
+		</dl>
+
+		<p class="post-excerpt">{post.data.excerpt}</p>
+
+		<a class="field-notes back-link" href="/#postmortems"><span>←</span> Back to index</a>
+	</aside>
+
+	<section class="column-main" slot="main" transition:animate={terminalCut}>
+		<article class="post-article">
+			<Content />
+		</article>
+	</section>
+</Layout>
